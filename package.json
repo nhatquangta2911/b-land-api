@@ -4,7 +4,7 @@
   "description": "Broadcasting, Promoting, Selling Coffee Products",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --forceExit",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
