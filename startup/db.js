@@ -39,18 +39,16 @@ db.sync({
   force: beDummyData
 }).then(() => {
   logger.info('[SYNCED] DATABASE & TABLES CREATED ');
-  if (beDummyData) {
-    applyDummy();
-  }
+  // applyDummy();
 });
 
-const applyDummy = async () => {
-  //TODO: FAKE INITIAL DATA
-  let user1 = await User.create({
-    email: 'shawn@enclave.vn',
-    phone: '0368080534',
-    password: '123456'
-  });
-};
+// const applyDummy = async () => {
+//   //TODO: FAKE INITIAL DATA
+//   let user1 = await User.create({
+//     email: 'shawn@enclave.vn',
+//     phone: '0368080534',
+//     password: '123456'
+//   });
+// };
 
 module.exports = { User };

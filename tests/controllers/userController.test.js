@@ -11,9 +11,10 @@ describe('/api/users', () => {
   afterEach(async () => {
     server.close();
     await User.destroy({
+      //   restartIdentity: true,
       where: {
-        id: {
-          [Op.in]: [1, 2, 3]
+        email: {
+          [Op.in]: ['user1@gmail.com', 'user2@gmail.com']
         }
       }
     });
@@ -34,7 +35,8 @@ describe('/api/users', () => {
         status: 1
       });
       const response = await request(server).get('/api/users');
-      expect(response.body.length).toBe(2);
+      expect(response.status).toBe(200);
+      expect(response.body.length).toBeGreaterThanOrEqual(2);
       expect(
         response.body.some(c => c.email === 'user1@gmail.com')
       ).toBeTruthy();
