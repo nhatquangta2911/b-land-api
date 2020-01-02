@@ -23,13 +23,13 @@ describe('/api/users', () => {
   describe('GET /', () => {
     it('should return all users', async () => {
       await User.create({
-        email: 'user1@gmail.com',
+        email: 'user01@gmail.com',
         phone: '0368080534',
         password: '123456',
         status: 1
       });
       await User.create({
-        email: 'user2@gmail.com',
+        email: 'user02@gmail.com',
         phone: '0776402587',
         password: '123456',
         status: 1
@@ -38,10 +38,10 @@ describe('/api/users', () => {
       expect(response.status).toBe(200);
       expect(response.body.length).toBeGreaterThanOrEqual(2);
       expect(
-        response.body.some(c => c.email === 'user1@gmail.com')
+        response.body.some(c => c.email === 'user01@gmail.com')
       ).toBeTruthy();
       expect(
-        response.body.some(c => c.email === 'user2@gmail.com')
+        response.body.some(c => c.email === 'user02@gmail.com')
       ).toBeTruthy();
     });
   });
