@@ -34,7 +34,7 @@ db.authenticate()
 
 const User = UserModel(db, Sequelize);
 
-const beDummyData = true;
+const beDummyData = false;
 db.sync({
   force: beDummyData
 }).then(() => {
