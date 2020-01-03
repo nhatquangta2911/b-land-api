@@ -25,8 +25,6 @@
       host: '18.136.124.94'
       port: '22'
       authentication_mode: 'PASS'
-      deployment_excludes:
-        - node_modules/
     - action: 'Execute: yarn start'
       type: 'BUILD'
       working_directory: '/buddy/b-land-api'
