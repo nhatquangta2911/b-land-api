@@ -25,6 +25,22 @@
       host: '18.136.124.94'
       port: '22'
       authentication_mode: 'PASS'
+      deployment_excludes:
+        - node_modules
+    - action: 'Execute: yarn start'
+      type: 'BUILD'
+      working_directory: '/buddy/b-land-api'
+      docker_image_name: 'library/node'
+      docker_image_tag: '10'
+      execute_commands:
+        - 'yarn install'
+        - 'yarn run test'
+        - 'yarn start'
+      setup_commands:
+        - 'npm install -g gulp grunt-cli'
+      mount_filesystem_path: '/buddy/b-land-api'
+      shell: 'BASH'
+      trigger_condition: 'ALWAYS'
   variables:
     - key: 'DATABASE'
       value: 'b-land'
