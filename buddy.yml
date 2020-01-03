@@ -19,7 +19,7 @@
       trigger_condition: 'ALWAYS'
     - action: 'Upload files to 18.136.124.94'
       type: 'SFTP'
-      input_type: 'SCM_REPOSITORY'
+      input_type: 'BUILD_ARTIFACTS'
       login: 'ubuntu'
       password: 'secure!fTl0Pv+WK1Kqj7RBbSC8Wg=='
       host: '18.136.124.94'
