@@ -9,7 +9,7 @@ const { User } = require('../startup/db');
 const show_all_users = async (req, res) => {
   try {
     let users = await User.findAll();
-    res.json(users);
+    res.json({ users, total: users.length });
   } catch (error) {
     logger.error(error.message, error);
     res.status(400).json('Something went wrong.');
