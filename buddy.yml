@@ -20,7 +20,7 @@
     - action: 'Upload files to 18.136.124.94'
       type: 'SFTP'
       input_type: 'SCM_REPOSITORY'
-      local_path: 'controllers'
+      local_path: '../'
       login: 'ubuntu'
       password: 'secure!fTl0Pv+WK1Kqj7RBbSC8Wg=='
       host: '18.136.124.94'
