@@ -1,6 +1,6 @@
 - pipeline: 'Production '
   trigger_mode: 'ON_EVERY_PUSH'
-  ref_name: 'master'
+  ref_name: 'ci/cd'
   ref_type: 'BRANCH'
   trigger_condition: 'ALWAYS'
   actions:
@@ -12,12 +12,19 @@
       execute_commands:
         - 'yarn install'
         - 'yarn run test'
-        - 'yarn start'
       setup_commands:
         - 'npm install -g gulp grunt-cli'
       mount_filesystem_path: '/buddy/b-land-api'
       shell: 'BASH'
       trigger_condition: 'ALWAYS'
+    - action: 'Upload files to 18.136.124.94'
+      type: 'SFTP'
+      input_type: 'SCM_REPOSITORY'
+      login: 'ubuntu'
+      password: 'secure!fTl0Pv+WK1Kqj7RBbSC8Wg=='
+      host: '18.136.124.94'
+      port: '22'
+      authentication_mode: 'PASS'
   variables:
     - key: 'DATABASE'
       value: 'b-land'
