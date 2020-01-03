@@ -12,7 +12,6 @@
       execute_commands:
         - 'yarn install'
         - 'yarn run test'
-        - 'yarn start'
       setup_commands:
         - 'npm install -g gulp grunt-cli'
       mount_filesystem_path: '/buddy/b-land-api'
