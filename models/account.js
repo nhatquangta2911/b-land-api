@@ -1,5 +1,5 @@
 module.exports = (sequelize, type) => {
-  return sequelize.define('user', {
+  return sequelize.define('account', {
     id: {
       type: type.INTEGER,
       primaryKey: true,
@@ -7,31 +7,28 @@ module.exports = (sequelize, type) => {
     },
     email: {
       type: type.STRING,
-      allowNull: true,
+      allowNull: false,
       validate: {
         isEmail: true
       }
     },
     phone: {
       type: type.STRING,
-      allowNull: true
+      allowNull: false
     },
-    picture: {
+    avatar: {
       type: type.STRING,
-      allowNull: true
+      allowNull: true,
+      defaultValue:
+        'https://s-report.s3-ap-southeast-1.amazonaws.com/service_default_avatar_182956.png'
     },
     name: {
       type: type.STRING,
-      allowNull: true
+      allowNull: false
     },
     password: {
       type: type.STRING,
-      allowNull: true
-    },
-    status: {
-      type: type.INTEGER,
-      allowNull: false,
-      defaultValue: 1
+      allowNull: false
     }
   });
 };
