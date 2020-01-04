@@ -6,11 +6,12 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const home = require('../routes/home');
-const user = require('../routes/users');
+const account = require('../routes/accounts');
 const error = require('../middlewares/error');
+const fileUpload = require('express-fileupload');
 
 module.exports = app => {
-  // app.use(fileUpload({ createParentPath: true }));
+  app.use(fileUpload({ createParentPath: true }));
   app.use(cors({ origin: '*', credentials: true }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -29,7 +30,7 @@ module.exports = app => {
   });
 
   app.use('/', home);
-  app.use('/api/users', user);
+  app.use('/api/accounts', account);
 
   app.use(error);
 };

@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const config = require('../config.js');
 const { logger } = require('../middlewares/logging');
 
-const UserModel = require('../models/user');
+const AccountModel = require('../models/account');
 
 var dbConfig = {
   username: config.USER,
@@ -32,23 +32,27 @@ db.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-const User = UserModel(db, Sequelize);
+const Account = AccountModel(db, Sequelize);
 
-const beDummyData = false;
+const isSync = true;
 db.sync({
-  force: beDummyData
+  force: isSync
 }).then(() => {
   logger.info('[SYNCED] DATABASE & TABLES CREATED ');
-  // applyDummy();
+  if (isSync) {
+    applyDummy();
+  }
 });
 
-// const applyDummy = async () => {
-//   //TODO: FAKE INITIAL DATA
-//   let user1 = await User.create({
-//     email: 'shawn@enclave.vn',
-//     phone: '0368080534',
-//     password: '123456'
-//   });
-// };
+const applyDummy = async () => {
+  let account = await Account.create({
+    name: 'Tạ Nhật Phong',
+    email: 'tanhatphong@gmail.com',
+    phone: '0931964784',
+    password: '$2a$10$ivZecdz7qRZHuAqXoL9pmO11G2gByx9x9K3cxvnE0U7r7ACzxnWNC',
+    avatar:
+      'https://s-report.s3-ap-southeast-1.amazonaws.com/service_default_avatar_182956.png'
+  });
+};
 
-module.exports = { User };
+module.exports = { Account };
