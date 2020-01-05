@@ -4,6 +4,7 @@ const { logger } = require('../middlewares/logging');
 
 const AccountModel = require('../models/account');
 const PostModel = require('../models/post');
+const BannerModel = require('../models/banner');
 
 //TODO: Connect DB
 var dbConfig = {
@@ -37,6 +38,7 @@ db.authenticate()
 //TODO: Define Models
 const Account = AccountModel(db, Sequelize);
 const Post = PostModel(db, Sequelize);
+const Banner = BannerModel(db, Sequelize);
 
 //TODO: Relationships
 Post.belongsTo(Account);
@@ -70,6 +72,13 @@ const applyDummy = async () => {
       'Chỉ cần thêm một chút bột ca cao, quế, mật ong vào cốc cà phê đen, bạn sẽ có đồ uống cải thiện ham muốn, tăng sức bền hiệu quả. Mọi người chỉ biết rằng cà phê có thể giúp tăng cường năng lượng, sự tỉnh táo cho một ngày dài. Nếu được thêm một số thành phần nhất định, cà phê cũng có tác dụng cải thiện ham muốn tình dục bằng cách tăng cường tâm trạng và lưu thông máu.',
     accountId: 1
   });
+  let banner = await Banner.create({
+    banners: [
+      'https://s-report.s3-ap-southeast-1.amazonaws.com/banner1.jpg',
+      'https://s-report.s3-ap-southeast-1.amazonaws.com/banner3.jpg',
+      'https://s-report.s3-ap-southeast-1.amazonaws.com/banner2.jfif'
+    ]
+  });
 };
 
-module.exports = { Account, Post };
+module.exports = { Account, Post, Banner };
