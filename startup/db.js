@@ -5,6 +5,7 @@ const { logger } = require('../middlewares/logging');
 const AccountModel = require('../models/account');
 const PostModel = require('../models/post');
 const BannerModel = require('../models/banner');
+const ContentUIModel = require('../models/contentUI');
 
 //TODO: Connect DB
 var dbConfig = {
@@ -39,6 +40,7 @@ db.authenticate()
 const Account = AccountModel(db, Sequelize);
 const Post = PostModel(db, Sequelize);
 const Banner = BannerModel(db, Sequelize);
+const ContentUI = ContentUIModel(db, Sequelize);
 
 //TODO: Relationships
 Post.belongsTo(Account);
@@ -79,6 +81,10 @@ const applyDummy = async () => {
       'https://s-report.s3-ap-southeast-1.amazonaws.com/banner2.jfif'
     ]
   });
+  let contentUI = await ContentUI.create({
+    quotes: ['Quote1', 'Quote2', 'Quote3'],
+    info: 'About us'
+  });
 };
 
-module.exports = { Account, Post, Banner };
+module.exports = { Account, Post, Banner, ContentUI };
