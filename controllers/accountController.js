@@ -27,20 +27,39 @@ const register_account = async (req, res) => {
     if (!file) {
       return ErrorHelper.BadRequest(res, 'No File Uploaded');
     } else {
-      if (file.size < 2 * 1024 * 1024) {
-        upload(res, file, async data => {
-          const result = await Account.create({
-            ..._.pick(req.body, ['name', 'email', 'phone']),
-            avatar: data,
-            password
-          });
-          res.json(result);
-        });
-      } else {
-        ErrorHelper.BadRequest(
+      if (
+        _.indexOf(
+          [
+            'image/png',
+            'image/jpeg',
+            'image/gif',
+            'image/tiff',
+            'image/svg+xml'
+          ],
+          file.mimetype
+        ) === -1
+      ) {
+        return ErrorHelper.BadRequest(
           res,
-          'BIG FILE ERROR: Choose file which is less than 5MB'
+          'Accept image only (*.png, *.jpg, *.jpeg, *.gif, *.tiff, *.svg)' +
+            file.mimetype
         );
+      } else {
+        if (file.size < 2 * 1024 * 1024) {
+          upload(res, file, async data => {
+            const result = await Account.create({
+              ..._.pick(req.body, ['name', 'email', 'phone']),
+              avatar: data,
+              password
+            });
+            res.json(result);
+          });
+        } else {
+          ErrorHelper.BadRequest(
+            res,
+            'BIG FILE ERROR: Choose file which is less than 5MB'
+          );
+        }
       }
     }
   } catch (error) {
@@ -56,7 +75,7 @@ const login = async (req, res) => {
       }
     });
     if (!account) {
-      return BadRequest(res, 'Username or password is not correct');
+      return ErrorHelper.BadRequest(res, 'Username or password is not correct');
     } else {
       const validPassword = await bcrypt.compare(
         req.body.password,
