@@ -9,6 +9,7 @@ const home = require('../routes/home');
 const account = require('../routes/accounts');
 const post = require('../routes/posts');
 const contentUI = require('../routes/contentUIs');
+const products = require('../routes/products');
 const banner = require('../routes/banners');
 const error = require('../middlewares/error');
 const fileUpload = require('express-fileupload');
@@ -37,6 +38,7 @@ module.exports = app => {
   app.use('/api/posts', post);
   app.use('/api/banners', banner);
   app.use('/api/contentUIs', contentUI);
+  app.use('/api/products', products);
 
   app.use(error);
 };

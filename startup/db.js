@@ -6,6 +6,11 @@ const AccountModel = require('../models/account');
 const PostModel = require('../models/post');
 const BannerModel = require('../models/banner');
 const ContentUIModel = require('../models/contentUI');
+const ProductModel = require('../models/product');
+const ProductDiscountModel = require('../models/productDiscount');
+const ProductPricingModel = require('../models/productPricing');
+const ProductStatusModel = require('../models/productStatus');
+const ProductTypeModel = require('../models/productType');
 
 //TODO: Connect DB
 var dbConfig = {
@@ -41,10 +46,22 @@ const Account = AccountModel(db, Sequelize);
 const Post = PostModel(db, Sequelize);
 const Banner = BannerModel(db, Sequelize);
 const ContentUI = ContentUIModel(db, Sequelize);
+const Product = ProductModel(db, Sequelize);
+const ProductDiscount = ProductDiscountModel(db, Sequelize);
+const ProductPricing = ProductPricingModel(db, Sequelize);
+const ProductStatus = ProductStatusModel(db, Sequelize);
+const ProductType = ProductTypeModel(db, Sequelize);
 
 //TODO: Relationships
 Post.belongsTo(Account);
 Account.hasMany(Post);
+
+ProductStatus.hasMany(Product);
+Product.belongsTo(ProductStatus);
+ProductType.hasMany(Product);
+Product.belongsTo(ProductType);
+Product.hasOne(ProductPricing);
+Product.hasOne(ProductDiscount);
 
 //TODO: Sync data
 const isSync = true;
@@ -85,6 +102,54 @@ const applyDummy = async () => {
     quotes: ['Quote1', 'Quote2', 'Quote3'],
     info: 'About us'
   });
+  let productStatus = await ProductStatus.create({
+    name: 'Sold-out'
+  });
+  let productType1 = await ProductType.create({
+    name: 'Cà phê hạng A',
+    description: 'Hạng A'
+  });
+  let productType2 = await ProductType.create({
+    name: 'Cà phê hạng B',
+    description: 'Hạng B'
+  });
+  let product = await Product.create({
+    name: 'CÀ PHÊ RANG XAY B-LAND A 450G',
+    images: [
+      'https://b-land.s3-ap-southeast-1.amazonaws.com/coffee0.jpg',
+      'https://b-land.s3-ap-southeast-1.amazonaws.com/coffee1.jpg',
+      'https://b-land.s3-ap-southeast-1.amazonaws.com/coffee2.jpg',
+      'https://b-land.s3-ap-southeast-1.amazonaws.com/coffee3.jpg'
+    ],
+    shortDescription: 'Chất lượng hảo hạng',
+    detailDescription: 'Vị đậm, đặc trưng riêng không lẫn với các cà phê khác',
+    unitsInStock: 300,
+    totalImport: 300,
+    weight: 450,
+    productStatusId: 1,
+    productTypeId: 2
+  });
+  let productPricing = await ProductPricing.create({
+    basePrice: 150000,
+    productId: 1
+  });
+  let productDiscount = await ProductDiscount.create({
+    discountValue: 30,
+    discountUnit: 1000,
+    lasting: 2,
+    amount: 20,
+    productId: 1
+  });
 };
 
-module.exports = { Account, Post, Banner, ContentUI };
+module.exports = {
+  Account,
+  Post,
+  Banner,
+  ContentUI,
+  Product,
+  ProductDiscount,
+  ProductPricing,
+  ProductStatus,
+  ProductType
+};
