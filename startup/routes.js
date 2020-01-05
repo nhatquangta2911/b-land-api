@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const home = require('../routes/home');
 const account = require('../routes/accounts');
+const post = require('../routes/posts');
 const error = require('../middlewares/error');
 const fileUpload = require('express-fileupload');
 
@@ -31,6 +32,7 @@ module.exports = app => {
 
   app.use('/', home);
   app.use('/api/accounts', account);
+  app.use('/api/posts', post);
 
   app.use(error);
 };
