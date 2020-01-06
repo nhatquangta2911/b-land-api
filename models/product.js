@@ -10,7 +10,7 @@ module.exports = (sequelize, type) => {
       allowNull: false
     },
     images: {
-      type: type.STRING,
+      type: type.STRING(1024),
       get: function() {
         return JSON.parse(this.getDataValue('images'));
       },

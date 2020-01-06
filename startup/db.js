@@ -162,5 +162,6 @@ module.exports = {
   ProductDiscount,
   ProductPricing,
   ProductStatus,
-  ProductType
+  ProductType,
+  ProductTypes
 };

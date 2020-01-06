@@ -25,7 +25,7 @@ const show_all_products = async (req, res) => {
         ProductStatus,
         ProductPricing,
         ProductDiscount,
-        ProductType
+        { model: ProductType, through: { attributes: [] } }
       ]
     });
     res.json({ products, total: products.length });
@@ -48,7 +48,7 @@ const show_products_by_page = async (req, res) => {
         ProductStatus,
         ProductPricing,
         ProductDiscount,
-        ProductType
+        { model: ProductType, through: { attributes: [] } }
       ],
       limit: 5,
       offset: (req.params.page - 1) * 5
@@ -66,7 +66,10 @@ const add_product = async (req, res) => {
     const account = await Account.findOne({ where: { id: accountId } });
     if (!account) return ErrorHelper.BadRequest(res, 'Account not found');
 
-    const files = req.files.images;
+    const files =
+      req.files && req.files.images && typeof req.files.images === 'array'
+        ? req.files.images
+        : _.fill(Array(1), req.files.images);
     let uploadedFiles = [];
 
     for (let file of files) {
@@ -89,14 +92,14 @@ const add_product = async (req, res) => {
     //TODO: await product.addProductTypes(JSON.parse('[2, 3]'));
     await product.addProductTypes(JSON.parse(req.body.productTypeIds));
     let productPricing = await ProductPricing.create({
-      basePrice: 230000,
+      basePrice: req.body.basePrice,
       productId: product && product.id
     });
     let productDiscount = await ProductDiscount.create({
-      discountValue: 50,
-      discountUnit: 1000,
-      lasting: 30,
-      amount: 200,
+      discountValue: req.body.discountValue,
+      discountUnit: req.body.discountUnit,
+      lasting: req.body.lasting,
+      amount: req.body.amount,
       productId: product && product.id
     });
     res.json({
@@ -109,9 +112,120 @@ const add_product = async (req, res) => {
     res.status(400).json('Something went wrong.');
   }
 };
+const update_product = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const product = await Product.findOne({
+      include: [
+        Account,
+        ProductStatus,
+        ProductPricing,
+        ProductDiscount,
+        { model: ProductType, through: { attributes: [] } }
+      ],
+      where: { id }
+    });
+    if (!product) return ErrorHelper.NotFound(res, 'Product is not exist');
+
+    const accountId = req.headers['id'];
+    const account = await Account.findOne({ where: { id: accountId } });
+    if (!account) return ErrorHelper.BadRequest(res, 'Account not found');
+
+    const files =
+      req.files && req.files.images && typeof req.files.images === 'array'
+        ? req.files.images
+        : _.fill(Array(1), req.files.images);
+    if (!files || files.length === 0) {
+      await Product.update(
+        {
+          ..._.pick(req.body, [
+            'name',
+            'shortDescription',
+            'detailDescription',
+            'unitsInStock',
+            'totalImport',
+            'weight',
+            'productStatusId'
+          ]),
+          images: product.images,
+          accountId
+        },
+        { where: { id } }
+      );
+      await product.removeProductTypes(_.map(product.productTypes, 'id'));
+      await product.addProductTypes(JSON.parse(req.body.productTypeIds));
+      await ProductPricing.update(
+        {
+          basePrice: req.body.basePrice,
+          productId: product && product.id
+        },
+        { where: { id: product.productPricing.id } }
+      );
+      await ProductDiscount.update(
+        {
+          discountValue: req.body.discountValue,
+          discountUnit: req.body.discountUnit,
+          lasting: req.body.lasting,
+          amount: req.body.amount,
+          productId: product && product.id
+        },
+        { where: { id: product.productDiscount.id } }
+      );
+    } else {
+      let uploadedFiles = [];
+      for (let file of files) {
+        uploadedFiles.push(await uploadMulti(file));
+      }
+
+      await Product.update(
+        {
+          ..._.pick(req.body, [
+            'name',
+            'shortDescription',
+            'detailDescription',
+            'unitsInStock',
+            'totalImport',
+            'weight',
+            'productStatusId'
+          ]),
+          accountId,
+          images: uploadedFiles
+        },
+        { where: { id } }
+      );
+      //TODO: await product.addProductTypes(JSON.parse('[2, 3]'));
+      await product.removeProductTypes(_.map(product.productTypes, 'id'));
+      await product.addProductTypes(JSON.parse(req.body.productTypeIds));
+      await ProductPricing.update(
+        {
+          basePrice: req.body.basePrice,
+          productId: product && product.id
+        },
+        { where: { id: product.productPricing.id } }
+      );
+      await ProductDiscount.update(
+        {
+          discountValue: req.body.discountValue,
+          discountUnit: req.body.discountUnit,
+          lasting: req.body.lasting,
+          amount: req.body.amount,
+          productId: product && product.id
+        },
+        { where: { id: product.productDiscount.id } }
+      );
+    }
+    res.json({
+      product
+    });
+  } catch (error) {
+    logger.error(error.message, error);
+    res.status(400).json('Something went wrong.');
+  }
+};
 
 module.exports = {
   show_all_products,
   show_products_by_page,
-  add_product
+  add_product,
+  update_product
 };
