@@ -223,9 +223,35 @@ const update_product = async (req, res) => {
   }
 };
 
+const delete_product = async (req, res) => {
+  try {
+    const product = await Product.findOne({
+      where: { id: req.params.id }
+    });
+    if (!product) return ErrorHelper.NotFound(res, 'Product Not Found');
+    await product.removeProductTypes(_.map(product.productTypes, 'id'));
+    await ProductDiscount.destroy({
+      where: {
+        productId: product.id
+      }
+    });
+    await ProductPricing.destroy({
+      where: { productId: product.id }
+    });
+    await Product.destroy({
+      where: { id: product.id }
+    });
+    res.json({ status: 'success' });
+  } catch (error) {
+    logger.error(error.message, error);
+    res.status(400).json('Something went wrong.');
+  }
+};
+
 module.exports = {
   show_all_products,
   show_products_by_page,
   add_product,
-  update_product
+  update_product,
+  delete_product
 };
