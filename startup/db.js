@@ -51,15 +51,21 @@ const ProductDiscount = ProductDiscountModel(db, Sequelize);
 const ProductPricing = ProductPricingModel(db, Sequelize);
 const ProductStatus = ProductStatusModel(db, Sequelize);
 const ProductType = ProductTypeModel(db, Sequelize);
+const ProductTypes = db.define('product_types', {}, { timestamps: false });
 
 //TODO: Relationships
 Post.belongsTo(Account);
 Account.hasMany(Post);
 
+Account.hasMany(Product);
+Product.belongsTo(Account);
+
 ProductStatus.hasMany(Product);
 Product.belongsTo(ProductStatus);
-ProductType.hasMany(Product);
-Product.belongsTo(ProductType);
+
+Product.belongsToMany(ProductType, { through: ProductTypes });
+ProductType.belongsToMany(Product, { through: ProductTypes });
+
 Product.hasOne(ProductPricing);
 Product.hasOne(ProductDiscount);
 
@@ -113,6 +119,10 @@ const applyDummy = async () => {
     name: 'Cà phê hạng B',
     description: 'Hạng B'
   });
+  let productType3 = await ProductType.create({
+    name: 'Cà phê sạch',
+    description: 'Cà phê sạch'
+  });
   let product = await Product.create({
     name: 'CÀ PHÊ RANG XAY B-LAND A 450G',
     images: [
@@ -127,8 +137,9 @@ const applyDummy = async () => {
     totalImport: 300,
     weight: 450,
     productStatusId: 1,
-    productTypeId: 2
+    accountId: 1
   });
+  product.addProductTypes([productType1, productType2, productType3]);
   let productPricing = await ProductPricing.create({
     basePrice: 150000,
     productId: 1
